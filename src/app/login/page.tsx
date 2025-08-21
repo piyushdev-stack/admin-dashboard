@@ -68,7 +68,7 @@ const LoginPage: React.FC = () => {
           <h2 className="mt-6 text-center text-3xl font-extrabold text-gray-900">
             Sign in to Admin Dashboard
           </h2>
-          <p className="mt-2 text-center text-sm text-gray-600">
+          <p className="mt-2 text-center text-sm text-gray-700">
             Use <span className="font-medium">admin@example.com</span> and{' '}
             <span className="font-medium">password</span> to login
           </p>

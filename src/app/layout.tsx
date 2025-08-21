@@ -11,13 +11,9 @@ const inter = Inter({
 export const metadata: Metadata = {
   title: "Admin Dashboard",
   description: "A modern admin dashboard built with Next.js and React",
-  manifest: "/manifest.json",
   icons: {
     icon: "/favicon.ico",
-    apple: "/icon-192x192.png",
   },
-  viewport: "width=device-width, initial-scale=1, maximum-scale=1",
-  themeColor: "#2563eb",
 };
 
 export default function RootLayout({

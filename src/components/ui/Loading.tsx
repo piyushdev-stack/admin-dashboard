@@ -41,7 +41,7 @@ const Loading: React.FC<LoadingProps> = ({
         />
       </svg>
       {text && (
-        <p className="mt-2 text-sm text-gray-600">{text}</p>
+        <p className="mt-2 text-sm text-gray-700">{text}</p>
       )}
     </div>
   );

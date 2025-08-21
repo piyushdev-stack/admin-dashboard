@@ -1,80 +1,87 @@
 import axios from 'axios';
 import { User, Post } from '@/types';
 
-const BASE_URL = 'https://jsonplaceholder.typicode.com';
+const API_BASE_URL = 'https://jsonplaceholder.typicode.com';
 
-// Create simple HTTP client
-const httpClient = axios.create({
-  baseURL: BASE_URL,
+// Create axios instance
+const api = axios.create({
+  baseURL: API_BASE_URL,
   timeout: 10000,
   headers: {
     'Content-Type': 'application/json',
   },
 });
 
-// Add token to requests
-httpClient.interceptors.request.use((config) => {
-  const userToken = localStorage.getItem('userToken');
-  if (userToken) {
-    config.headers.Authorization = `Bearer ${userToken}`;
-  }
-  return config;
-});
-
-// Handle errors
-httpClient.interceptors.response.use(
-  (response) => response,
+// Request interceptor
+api.interceptors.request.use(
+  (config) => {
+    // Add auth token if available
+    const token = localStorage.getItem('authToken');
+    if (token) {
+      config.headers.Authorization = `Bearer ${token}`;
+    }
+    return config;
+  },
   (error) => {
+    return Promise.reject(error);
+  }
+);
+
+// Response interceptor
+api.interceptors.response.use(
+  (response) => {
+    return response;
+  },
+  (error) => {
+    // Handle common errors
     if (error.response?.status === 401) {
-      localStorage.removeItem('userToken');
+      // Redirect to login or refresh token
+      localStorage.removeItem('authToken');
       window.location.href = '/login';
     }
     return Promise.reject(error);
   }
 );
 
-// Simple API functions
+// User API functions
 export const userAPI = {
-  // Get all users
   async getAllUsers(): Promise<User[]> {
-    const response = await httpClient.get<User[]>('/users');
+    const response = await api.get<User[]>('/users');
     return response.data;
   },
 
-  // Get one user by ID
-  async getUserById(userId: number): Promise<User> {
-    const response = await httpClient.get<User>(`/users/${userId}`);
+  async getUserById(id: number): Promise<User> {
+    const response = await api.get<User>(`/users/${id}`);
     return response.data;
   },
 };
 
+// Post API functions
 export const postAPI = {
-  // Get all posts
   async getAllPosts(): Promise<Post[]> {
-    const response = await httpClient.get<Post[]>('/posts');
+    const response = await api.get<Post[]>('/posts');
     return response.data;
   },
 
-  // Get one post by ID
-  async getPostById(postId: number): Promise<Post> {
-    const response = await httpClient.get<Post>(`/posts/${postId}`);
+  async getPostById(id: number): Promise<Post> {
+    const response = await api.get<Post>(`/posts/${id}`);
     return response.data;
   },
 
-  // Get posts by user
   async getPostsByUser(userId: number): Promise<Post[]> {
-    const response = await httpClient.get<Post[]>(`/posts?userId=${userId}`);
+    const response = await api.get<Post[]>(`/posts?userId=${userId}`);
     return response.data;
   },
 };
 
+// Auth API functions
 export const authAPI = {
-  // Simple login function
   async loginUser(email: string, password: string): Promise<{ token: string; user: User }> {
+    // Mock login - in real app this would be a proper API call
     return new Promise((resolve, reject) => {
       setTimeout(() => {
         if (email === 'admin@example.com' && password === 'password') {
-          const adminUser: User = {
+          const mockUser: User = {
             id: 1,
             name: 'Admin User',
             username: 'admin',
@@ -98,23 +105,25 @@ export const authAPI = {
             }
           };
           resolve({
-            token: 'user-token-123',
-            user: adminUser
+            token: 'mock-jwt-token',
+            user: mockUser
           });
         } else {
-          reject(new Error('Wrong email or password'));
+          reject(new Error('Invalid credentials'));
         }
       }, 1000);
     });
   },
 
-  // Simple logout function
   async logoutUser(): Promise<void> {
+    // Mock logout
     return new Promise((resolve) => {
       setTimeout(() => {
-        localStorage.removeItem('userToken');
+        localStorage.removeItem('authToken');
         resolve();
       }, 500);
     });
   }
 };
+
+export default api;
