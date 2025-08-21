@@ -228,6 +228,6 @@ npm run start
 i have deplyed the assignment on Vercel
 1. **Using Vercel CLI**
    ```bash
-   npm install -g vercel
-   vercel
+   npm install -g vercel #install vercel cli
+   vercel #deploy the code on vercel
    ```
